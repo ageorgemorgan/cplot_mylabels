@@ -73,12 +73,13 @@ def _add_colorbar_arg(cax, saturation_adjustment: float):
 
     cb1 = plt.colorbar(cm.ScalarMappable(norm=norm, cmap=newcmp), cax=cax)
 
-    cb1.set_label("arg", rotation=0, ha="center", va="top")
+    cb1.set_label("Arg", rotation=0, ha="center", va="top", fontsize=14)
     cb1.ax.yaxis.set_label_coords(0.5, -0.03)
     cb1.set_ticks([-np.pi, -np.pi / 2, 0, +np.pi / 2, np.pi])
     cb1.set_ticklabels(
-        [r"$-\pi$", r"$-\dfrac{\pi}{2}$", "$0$", r"$\dfrac{\pi}{2}$", r"$\pi$"]
+        [r"$-\pi$", r"$-\frac{\pi}{2}$", "$0$", r"$\phantom{-}\frac{\pi}{2}$", r"$\phantom{-}\pi$"]
     )
+    cb1.ax.tick_params(labelsize=14, color='k') 
 
 
 def _add_colorbar_abs(cax, abs_scaling: Callable, abs_contours: float | list[float]):
@@ -88,7 +89,7 @@ def _add_colorbar_abs(cax, abs_scaling: Callable, abs_contours: float | list[flo
         cm.ScalarMappable(norm=norm, cmap=cm.gray),
         cax=cax,
     )
-    cb0.set_label("abs", rotation=0, ha="center", va="top")
+    cb0.set_label("Abs", rotation=0, ha="center", va="top", fontsize=14)
     cb0.ax.yaxis.set_label_coords(0.5, -0.03)
 
     if isinstance(abs_contours, (int, float)):
@@ -101,9 +102,9 @@ def _add_colorbar_abs(cax, abs_scaling: Callable, abs_contours: float | list[flo
             cb0.set_ticklabels(
                 [
                     "0",
-                    f"$\\frac{{1}}{{{abs_contours ** 3}}}$",
-                    f"$\\frac{{1}}{{{abs_contours ** 2}}}$",
-                    f"$\\frac{{1}}{{{abs_contours ** 1}}}$",
+                    f"$\\frac{1}{abs_contours ** 3}$",
+                    f"$\\frac{1}{abs_contours ** 2}$",
+                    f"$\\frac{1}{abs_contours ** 1}$",
                     "$1$",
                     f"{abs_contours ** 1}",
                     f"{abs_contours ** 2}",
@@ -129,7 +130,8 @@ def _add_colorbar_abs(cax, abs_scaling: Callable, abs_contours: float | list[flo
         scaled_vals = abs_scaling(np.asarray(abs_contours))
         cb0.set_ticks([0.0, *scaled_vals, 1.0])
         cb0.set_ticklabels(["0", *[f"{val}" for val in scaled_vals], "∞"])
-
+    
+    cb0.ax.tick_params(labelsize=14, color='k') 
 
 def _plot_contour_abs(
     Z,
@@ -358,15 +360,19 @@ def _plot(
         )
 
     if add_axes_labels:
-        plt.xlabel("Re(z)")
+        plt.xlabel(r"$\Re(s)$", fontsize=14)
         # ylabel off-center, <https://github.com/matplotlib/matplotlib/issues/21467>
         plt.ylabel(
-            "Im(z)",
+            r"$\Im(s)$",
             rotation="horizontal",
             loc="center",
             verticalalignment="center",
             labelpad=10,
+            fontsize=14
         )
+
+    plt.xticks(fontsize=14, rotation=0, color = 'k')
+    plt.yticks(fontsize=14, rotation=0, color = 'k')
 
     # colorbars?
     if isinstance(add_colorbars, bool):
